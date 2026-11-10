@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fridge Chef: recipes from what's in your fridge</title>
+<style>
+:root{--bg:#f5f7f6;--card:#ffffff;--ink:#1b2b27;--muted:#5f716c;--line:#dce5e2;--accent:#0f766e;--accent-ink:#ffffff;--soft:#e6f2ef;--chip:#eef4f2;--chip-on:#0f766e;--chip-on-ink:#ffffff;--danger:#b42318;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1816;--card:#15241f;--ink:#e4f0ec;--muted:#9bb3ac;--line:#2a3f38;--accent:#2dd4bf;--accent-ink:#052e2b;--soft:#1c2f29;--chip:#1c2f29;--chip-on:#2dd4bf;--chip-on-ink:#052e2b;--danger:#f97066;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:inherit}
+
+/* ---------- Sales page ---------- */
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+#home h1,#home h2,#home h3{line-height:1.2}
+#home nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0;gap:12px}
+.logo{font-weight:700;font-size:1.15rem;text-decoration:none;color:var(--ink)}
+.logo span{color:var(--accent)}
+#home nav .links a{margin-left:18px;text-decoration:none;color:var(--muted);font-size:.95rem}
+.btn{display:inline-block;border-radius:12px;padding:13px 20px;font:inherit;font-weight:600;text-decoration:none;border:1px solid transparent;cursor:pointer;text-align:center}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--accent)}
+.hero{padding:56px 0 40px}
+.eyebrow{color:var(--accent);font-weight:600;font-size:.9rem;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
+#home h1{font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-.02em;margin:0 0 16px;max-width:760px}
+.lead{font-size:1.15rem;color:var(--muted);max-width:620px;margin:0 0 26px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.block{padding:40px 0}
+#home h2{font-size:1.6rem;letter-spacing:-.01em;margin:0 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted)}
+.steps{display:grid;gap:12px;max-width:720px}
+.step{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center}
+.step b{display:block}
+.step p{margin:2px 0 0;color:var(--muted)}
+.price-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:460px;display:grid;gap:14px}
+.price{font-size:3rem;font-weight:700;margin:0;line-height:1}
+.price span{font-size:1.6rem;vertical-align:top;margin-right:2px}
+.price-card ul{margin:0;padding-left:20px}
+.price-card li{margin:4px 0}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.note{color:var(--accent);min-height:1.2em;margin:0;font-size:.92rem}
+.trial{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:24px}
+#home .trial h2{margin-bottom:6px;font-size:1.35rem}
+.trial p{margin:0;color:var(--muted);max-width:620px}
+#home footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.9rem;margin-top:24px}
+@media (max-width:640px){#home nav .links{display:none}}
+
+/* ---------- Trial page ---------- */
+#trialPage{padding:16px}
+.trial-bar{max-width:880px;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:.92rem}
+#trialLeft{color:var(--muted)}
+.bar-btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:10px 16px;font-weight:600;text-decoration:none}
+.bar-buy{font-size:1.25rem;padding:12px 24px}
+#trialPage main{max-width:880px;margin:0 auto;display:grid;gap:16px}
+#trialPage header h1{margin:8px 0 2px;font-size:1.7rem;letter-spacing:-.01em}
+#trialPage header p{margin:0;color:var(--muted)}
+#trialPage section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+#trialPage h2{font-size:1.05rem;margin:0 0 10px}
+#trialPage .gh{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+#trialPage .gh:first-child{margin-top:0}
+#trialPage .chips{display:flex;flex-wrap:wrap;gap:8px}
+#trialPage .chip{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;font:inherit;font-size:.92rem}
+#trialPage .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink);border-color:transparent}
+#trialPage .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+#trialPage input[type=text]{flex:1;min-width:160px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+#trialPage button.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer}
+#trialPage button.ghost,#trialPage label.ghost{background:transparent;color:var(--accent);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer;display:inline-block}
+#trialPage button:disabled{opacity:.5;cursor:default}
+#trialPage .status{color:var(--muted);font-size:.92rem;margin-top:10px;min-height:1.4em;text-align:center}
+#trialPage .photo{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+#trialPage .photo img{width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+#trialPage .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+#trialPage .recipe{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+#trialPage .recipe h3{margin:0 0 4px;font-size:1.05rem}
+#trialPage .meta{color:var(--muted);font-size:.88rem;margin-bottom:8px}
+#trialPage .recipe ul,#trialPage .recipe ol{margin:6px 0 0;padding-left:20px}
+#trialPage .recipe li{margin:3px 0}
+#trialPage .list{list-style:none;padding:0;margin:0}
+#trialPage .list li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+#trialPage .list li:last-child{border-bottom:0}
+#trialPage .list label{flex:1;display:flex;gap:10px;align-items:center;cursor:pointer}
+#trialPage .list .amt{color:var(--muted);font-size:.9rem}
+#trialPage .list .done span{text-decoration:line-through;color:var(--muted)}
+#trialPage .x{background:none;border:0;color:var(--danger);font-size:1.3rem;cursor:pointer;padding:0 4px}
+#trialPage .empty{color:var(--muted);font-style:italic}
+#trialPage footer{color:var(--muted);font-size:.85rem;text-align:center}
+#trialPage.locked>.trial-bar,#trialPage.locked>main{filter:blur(6px);pointer-events:none;user-select:none}
+.lock{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(14,24,22,.35);z-index:10}
+#trialPage .lock-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:380px;text-align:center}
+#trialPage .lock-card h2{margin:0 0 8px;font-size:1.4rem}
+#trialPage .lock-card p{margin:0 0 18px;color:var(--muted)}
+.lock-btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:13px 20px;font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ===================== SALES PAGE (home) ===================== -->
+<div id="home">
+
+<div class="wrap">
+<nav>
+<a class="logo" href="#">Fridge<span> Chef</span></a>
+<div class="links">
+<a href="#features">Features</a>
+<a href="#how">How it works</a>
+<a href="#trial">Try it</a>
+<a href="#buy">Buy</a>
+<a href="#contact">Contact</a>
+</div>
+</nav>
+</div>
+
+<section class="hero">
+<div class="wrap">
+<p class="eyebrow">Recipes from what you already have</p>
+<h1>Turn what's in your fridge into dinner.</h1>
+<p class="lead">Pick the vegetables, meat, dairy and leftovers you have. Fridge Chef gives you recipes you can make right now, plus a shopping list for anything missing.</p>
+<div class="cta">
+<a class="btn primary js-buy" href="#buy" target="_blank" rel="noopener">Buy Fridge Chef for ₹499</a>
+<a class="btn ghost" href="#trial">Try it first</a>
+</div>
+</div>
+</section>
+
+<section class="wrap block" id="features">
+<h2>How Fridge Chef helps</h2>
+<div class="cards">
+<article class="card">
+<h3>Pick what you have</h3>
+<p>Tick items from vegetables, meat, dairy, fruit and herbs. Add anything the list doesn't have.</p>
+</article>
+<article class="card">
+<h3>Recipes from your items</h3>
+<p>Every recipe uses only what you picked, plus your pantry staples.</p>
+</article>
+<article class="card">
+<h3>A shopping list for the rest</h3>
+<p>Anything missing goes on your to-buy list. Check items off as you shop, and copy the list to take with you.</p>
+</article>
+</div>
+</section>
+
+<section class="wrap block" id="how">
+<h2>How it works</h2>
+<div class="steps">
+<div class="step"><span class="num">1</span><div><b>Pick</b><p>Tick what's in your fridge and confirm your pantry staples.</p></div></div>
+<div class="step"><span class="num">2</span><div><b>Cook</b><p>Tap "Create recipes and shopping list" and choose a recipe.</p></div></div>
+<div class="step"><span class="num">3</span><div><b>Shop</b><p>Check off what you still need to buy.</p></div></div>
+</div>
+</section>
+
+<section class="wrap block" id="buy">
+<h2>Get Fridge Chef</h2>
+<div class="price-card">
+<p class="price"><span>₹</span>499</p>
+<ul>
+<li>Pick items from your fridge and pantry</li>
+<li>Recipes made only from what you have</li>
+<li>Shopping list for missing items</li>
+<li>Photo scan of your fridge, where AI is available</li>
+</ul>
+<a class="btn primary js-buy" href="#buy" target="_blank" rel="noopener">Buy for ₹499</a>
+<p class="note" id="payNote"></p>
+<p class="muted small">Payments are handled securely by Razorpay.</p>
+</div>
+</section>
+
+<section class="wrap block">
+<div class="trial">
+<div>
+<h2>Not sure yet? Try it first.</h2>
+<p>Open the trial and try Fridge Chef up to three times right in your browser. Your items and shopping list stay saved on this device.</p>
+</div>
+<a class="btn ghost" href="#trial">Open the trial</a>
+</div>
+</section>
+
+<section class="wrap block" id="contact">
+<h2>Contact us</h2>
+<p class="muted">Have a question before you buy? Reach us on WhatsApp or by email.</p>
+<div class="cta">
+<a class="btn primary" id="wa" target="_blank" rel="noopener">Contact us on WhatsApp</a>
+<a class="btn ghost" id="mail">Email us</a>
+</div>
+<p class="muted small" style="margin-top:14px">WhatsApp: +91 89836 93446 · Email: company.novatech14@gmail.com</p>
+</section>
+
+<footer>
+<div class="wrap">© 2026 Fridge Chef · A NovaTech product</div>
+</footer>
+
+</div>
+
+<!-- ===================== TRIAL PAGE (page 2) ===================== -->
+<div id="trialPage" hidden>
+
+<div class="trial-bar">
+<a class="bar-btn" href="#">← Back to Fridge Chef</a>
+<span id="trialLeft"></span>
+<a class="bar-btn bar-buy" href="#buy">Buy for ₹499</a>
+</div>
+
+<main>
+<header>
+<h1>Fridge Chef</h1>
+<p>Tell it what's left in your fridge, from vegetables to leftovers, snap a photo if you like, and get recipes that use it up, plus a shopping list for anything missing.</p>
+</header>
+
+<section>
+<h2>1. What's in your fridge?</h2>
+<div id="fridge"></div>
+<div class="row">
+<input type="text" id="fridgeInput" placeholder="Add anything else" aria-label="Add ingredient">
+<button class="ghost" id="addFridge">Add</button>
+</div>
+<div class="photo">
+<label class="ghost">📷 Scan your fridge<input type="file" id="photo" accept="image/*" style="display:none"></label>
+<img id="thumb" alt="Photo of fridge contents" hidden>
+<button class="ghost" id="clearPhoto" hidden>Remove photo</button>
+</div>
+</section>
+
+<section>
+<h2>2. Pantry staples you already have</h2>
+<div class="chips" id="pantryChips"></div>
+</section>
+
+<div class="row" style="justify-content:center">
+<button class="primary" id="generate">Create recipes and shopping list</button>
+</div>
+<div class="status" id="status" role="status"></div>
+
+<section>
+<h2>3. Recipes to use it up</h2>
+<div class="grid" id="recipes"></div>
+</section>
+
+<section>
+<h2>4. To-buy reminder</h2>
+<ul class="list" id="list"></ul>
+<p class="empty" id="listEmpty">Nothing on your to-buy list yet. Add anything you want to remember to buy.</p>
+<div class="row">
+<input type="text" id="itemInput" placeholder="Add an item" aria-label="Add item">
+<button class="ghost" id="addItem">Add</button>
+<button class="ghost" id="clearDone">Clear checked</button>
+<button class="ghost" id="copy">Copy to-buy items</button>
+</div>
+</section>
+
+<footer>Photo scanning and AI recipes use Claude when it's available here. Otherwise you get built-in recipes.</footer>
+</main>
+
+<div class="lock" id="lock" hidden>
+<div class="lock-card">
+<h2>Buy Fridge Chef</h2>
+<p>You've used all 3 trial tries. Buy Fridge Chef to keep making recipes from your fridge.</p>
+<a class="lock-btn" id="lockBuy" target="_blank" rel="noopener">Buy Fridge Chef for ₹499</a>
+</div>
+</div>
+
+</div>
+
+<script>
+/* ===== SALES PAGE SETTINGS: edit these ===== */
+const RAZORPAY_LINK = "https://razorpay.me/@shyam3617";
+const WHATSAPP_NUMBER = "918983693446";
+const WHATSAPP_MESSAGE = "Hi, I am interested in Fridge Chef";
+const EMAIL_TO = "company.novatech14@gmail.com";
+const EMAIL_SUBJECT = "Interested in Fridge Chef";
+const EMAIL_BODY = "Hi, I am interested in Fridge Chef. Please share more details.";
+/* ========================================== */
+
+const paymentReady = RAZORPAY_LINK.startsWith("https://");
+const payNote = document.getElementById("payNote");
+
+document.querySelectorAll(".js-buy").forEach(btn => {
+  btn.href = paymentReady ? RAZORPAY_LINK : "#buy";
+  btn.addEventListener("click", e => {
+    if(!paymentReady){
+      e.preventDefault();
+      payNote.textContent = "Payment link is not set up yet. Please contact us to buy.";
+    }
+  });
+});
+
+document.getElementById("wa").href =
+  "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(WHATSAPP_MESSAGE);
+
+document.getElementById("mail").href =
+  "mailto:" + EMAIL_TO +
+  "?subject=" + encodeURIComponent(EMAIL_SUBJECT) +
+  "&body=" + encodeURIComponent(EMAIL_BODY);
+
+/* ===== PAGE SWITCHING: #trial shows the trial page, anything else shows the sales page ===== */
+const homePage = document.getElementById("home");
+const trialPage = document.getElementById("trialPage");
+
+function showPage(){
+  const onTrial = location.hash === "#trial";
+  homePage.hidden = onTrial;
+  trialPage.hidden = !onTrial;
+  const id = !onTrial && location.hash.length > 1 ? decodeURIComponent(location.hash.slice(1)) : "";
+  const target = id ? document.getElementById(id) : null;
+  if(target) target.scrollIntoView();
+  else window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", showPage);
+showPage();
+</script>
+
+<script>
+
+const GROUPS = {
+  "Vegetables": ["Onion","Tomato","Potato","Carrot","Capsicum","Spinach","Cabbage","Broccoli","Cauliflower","Peas","Green beans","Mushrooms","Zucchini","Cucumber","Lettuce","Corn","Eggplant"],
+  "Meat & seafood": ["Chicken","Mutton","Beef","Pork","Fish","Prawns","Ham"],
+  "Eggs, dairy & protein": ["Eggs","Paneer","Tofu","Milk","Curd","Cheese","Butter","Cream"],
+  "Fruit": ["Apple","Banana","Lemon","Lime","Orange","Mango","Berries"],
+  "Bread & grains": ["Bread","Tortillas","Cooked rice","Pasta","Noodles","Roti","Oats"],
+  "Herbs & aromatics": ["Garlic","Ginger","Green chilies","Coriander","Curry leaves","Mint","Basil"]
+};
+const KNOWN = Object.values(GROUPS).flat();
+const PANTRY = ["Salt","Black pepper","Cooking oil","Olive oil","Sugar","Flour","Soy sauce","Vinegar","Cumin seeds","Cumin powder","Mustard seeds","Turmeric","Red chili powder","Coriander powder","Garam masala","Chaat masala","Coconut milk","Stock cubes","Ketchup"];
+const KEY = "fridge-chef-v1";
+const $ = id => document.getElementById(id);
+const toggle = (arr, n) => arr.includes(n) ? arr.filter(x => x !== n) : [...arr, n];
+const same = (a, b) => a.toLowerCase() === b.toLowerCase();
+
+const S = {fridge:[], extras:[], pantry:["Salt","Black pepper","Cooking oil"], list:[], recipes:[], photo:null};
+
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(d){ S.fridge = d.fridge || []; S.extras = d.extras || []; S.pantry = d.pantry || S.pantry; S.list = (d.list || []).filter(i => i.manual); }
+  }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify({fridge:S.fridge, extras:S.extras, pantry:S.pantry, list:S.list})); }catch(e){}
+}
+
+function addToFridge(name){
+  const hit = KNOWN.find(k => same(k, name));
+  const n = hit || name;
+  if(!hit && !S.extras.some(x => same(x, n))) S.extras.push(n);
+  if(!S.fridge.some(x => same(x, n))) S.fridge.push(n);
+}
+
+function chipRow(el, items, selected, onToggle){
+  el.innerHTML = "";
+  items.forEach(name => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = name;
+    b.setAttribute("aria-pressed", String(selected.includes(name)));
+    b.onclick = () => onToggle(name);
+    el.appendChild(b);
+  });
+}
+
+function renderChips(){
+  const box = $("fridge");
+  box.innerHTML = "";
+  const groups = {...GROUPS};
+  const extra = S.extras.filter(x => !KNOWN.some(k => same(k, x)));
+  if(extra.length) groups["Other items"] = extra;
+  Object.entries(groups).forEach(([g, items]) => {
+    const h = document.createElement("div");
+    h.className = "gh";
+    h.textContent = g;
+    const wrap = document.createElement("div");
+    wrap.className = "chips";
+    box.append(h, wrap);
+    chipRow(wrap, items, S.fridge, n => { S.fridge = toggle(S.fridge, n); save(); renderChips(); });
+  });
+  chipRow($("pantryChips"), PANTRY, S.pantry, n => { S.pantry = toggle(S.pantry, n); save(); renderChips(); });
+}
+
+function addFridgeInput(){
+  const v = $("fridgeInput").value.trim();
+  if(!v) return;
+  addToFridge(v.replace(/\b\w/g, c => c.toUpperCase()));
+  $("fridgeInput").value = "";
+  save(); renderChips();
+}
+$("addFridge").onclick = addFridgeInput;
+$("fridgeInput").onkeydown = e => { if(e.key === "Enter") addFridgeInput(); };
+
+$("photo").onchange = e => {
+  const f = e.target.files[0];
+  if(!f) return;
+  S.photo = f;
+  $("thumb").src = URL.createObjectURL(f);
+  $("thumb").hidden = false;
+  $("clearPhoto").hidden = false;
+};
+$("clearPhoto").onclick = () => {
+  S.photo = null;
+  $("photo").value = "";
+  $("thumb").hidden = true;
+  $("clearPhoto").hidden = true;
+};
+
+function setStatus(t){ $("status").textContent = t; }
+
+async function getSample(){
+  try{
+    const s = window.claude ? await window.claude.use("sample") : null;
+    return typeof s === "function" ? s : null;
+  }catch(e){ return null; }
+}
+
+function prompt(withPhoto){
+  return `You are a practical home cook who hates food waste.
+Ingredients left in the cook's fridge: ${S.fridge.join(", ") || "none named, so identify them from the photo"}.
+Pantry staples the cook has ticked: ${S.pantry.join(", ") || "none"}.
+${withPhoto ? "A photo of the fridge is attached. Identify the food you can clearly see and include it in the fridge list." : ""}
+Create 4 real, named dishes a home cook would actually make (for example fried rice, masala egg scramble, aloo masala, or a curry), using ONLY the fridge ingredients and ticked pantry staples above. Never add any ingredient that isn't in those two lists, never suggest buying anything, and never mention missing items. If a classic dish needs something the cook doesn't have, choose a different dish. Write each recipe the way a good cookbook does, with exact quantities such as '1 tbsp cumin seeds', '2 cups cooked rice', or '1/2 tsp salt'. Never use the words 'needed', 'required', 'need', 'as needed', 'to taste', or 'leftover', and never add a line that lists what is needed. Each recipe starts straight with its first cooking step, and each ingredient line is only an amount and a name. Give the steps in real cooking order, for example: heat oil, add cumin seeds, then onion, then the spices, then the main ingredient. Some items may already be cooked, so add those late so they don't overcook. Keep steps short and clear.
+Return ONLY valid JSON with no markdown, in exactly this shape:
+{"fridge":["ingredients you identified"],"recipes":[{"title":"","time_minutes":0,"servings":0,"ingredients":[{"name":"","amount":""}],"steps":[""]}]}`;
+}
+
+function parse(text){
+  const clean = String(text || "").replace(/```json|```/g, "").trim();
+  return JSON.parse(clean.slice(clean.indexOf("{"), clean.lastIndexOf("}") + 1));
+}
+
+const scrub = s => String(s || "")
+  .replace(/\bas needed\b|\bneeded\b|\brequired\b|\bto taste\b|\bleftovers?\b/gi, "")
+  .replace(/\(\s*\)/g, "")
+  .replace(/\s{2,}/g, " ")
+  .replace(/\s+([,.;:])/g, "$1")
+  .trim();
+
+function normalize(r){
+  return {
+    title: scrub(r.title) || "Recipe",
+    time: Number(r.time_minutes) || 20,
+    servings: Number(r.servings) || 2,
+    ingredients: (r.ingredients || [])
+      .map(i => typeof i === "string" ? {name:i, amount:""} : {name:i.name, amount:i.amount})
+      .map(i => ({name: scrub(i.name).replace(/^as\s+/i, ""), amount: scrub(i.amount)}))
+      .filter(i => i.name),
+    steps: (r.steps || []).map(s => scrub(s)).filter(Boolean)
+  };
+}
+
+const has = re => [...S.fridge, ...S.pantry].some(x => re.test(x));
+
+const DISHES = [
+  {t:"Masala fried rice", time:20, serves:2, need:[/rice/i],
+   ing:[[/rice/i,"2 cups","cooked rice"],[/oil/i,"2 tbsp","oil"],[/cumin seeds/i,"1 tbsp","cumin seeds"],[/onion/i,"1","onion, chopped"],[/garlic/i,"3 cloves","garlic, minced"],[/green chil/i,"2","green chilies, chopped"],[/egg/i,"2","eggs, beaten"],[/turmeric/i,"1/2 tsp","turmeric"],[/garam masala/i,"1 tsp","garam masala"],[/soy sauce/i,"1 tbsp","soy sauce"],[/^salt$/i,"1/2 tsp","salt"],[/^coriander$/i,"2 tbsp","chopped coriander"]],
+   steps:[[[],"Heat a wide pan over medium-high heat."],[[/oil/i],"Pour in the oil and let it heat."],[[/cumin seeds/i],"Add the cumin seeds and let them sizzle for 30 seconds."],[[/onion/i],"Add the onion and cook until golden."],[[/garlic/i],"Stir in the garlic for 1 minute."],[[/green chil/i],"Add the green chilies and stir for 30 seconds."],[[/turmeric|garam masala/i],"Stir in the spices for 20 seconds."],[[/egg/i],"Push the onion aside, pour in the eggs, and scramble until just set."],[[/rice/i],"Add the rice and toss, breaking up any clumps."],[[/soy sauce/i],"Splash in the soy sauce and toss on high heat for 2 minutes."],[[/^salt$/i],"Season with salt."],[[],"Scatter with coriander and serve hot."]]},
+  {t:"Masala egg scramble", time:12, serves:1, need:[/egg/i],
+   ing:[[/egg/i,"3","eggs"],[/oil/i,"1 tbsp","oil"],[/onion/i,"1 small","onion, finely chopped"],[/green chil/i,"1","green chilies, chopped"],[/tomato/i,"1","tomato, chopped"],[/cumin seeds/i,"1/2 tsp","cumin seeds"],[/turmeric/i,"1/4 tsp","turmeric"],[/chili powder/i,"1/2 tsp","chili powder"],[/^salt$/i,"1/4 tsp","salt"],[/^coriander$/i,"2 tbsp","chopped coriander"]],
+   steps:[[[/oil/i],"Heat the oil in a pan."],[[/cumin seeds/i],"Add the cumin seeds and let them splutter."],[[/onion/i],"Add the onion and cook until soft."],[[/green chil/i],"Add the green chilies."],[[/tomato/i],"Add the tomato and cook until mushy."],[[/turmeric/i],"Stir in the turmeric."],[[/chili powder/i],"Add the chili powder."],[[],"Beat the eggs, pour them in, and scramble gently."],[[/^salt$/i],"Season with salt."],[[/^coriander$/i],"Finish with chopped coriander and serve hot."]]},
+  {t:"Aloo masala", time:25, serves:3, need:[/potato/i],
+   ing:[[/potato/i,"3 medium","potatoes, boiled and cubed"],[/oil/i,"2 tbsp","oil"],[/mustard seeds/i,"1 tsp","mustard seeds"],[/cumin seeds/i,"1 tsp","cumin seeds"],[/onion/i,"1","onion, chopped"],[/tomato/i,"1","tomato, chopped"],[/turmeric/i,"1/2 tsp","turmeric"],[/chili powder/i,"1 tsp","chili powder"],[/coriander powder/i,"1 tsp","coriander powder"],[/garam masala/i,"1/2 tsp","garam masala"],[/^salt$/i,"1/2 tsp","salt"],[/^coriander$/i,"2 tbsp","chopped coriander"]],
+   steps:[[[/oil/i],"Heat the oil in a pan."],[[/mustard seeds/i],"Add the mustard seeds and wait for them to pop."],[[/cumin seeds/i],"Add the cumin seeds."],[[/onion/i],"Add the onion and cook until golden."],[[/tomato/i],"Add the tomato and cook until soft."],[[/turmeric|chili powder|coriander powder/i],"Stir in the powdered spices for 30 seconds."],[[/potato/i],"Add the potatoes, toss to coat, and cook for 5 minutes."],[[/garam masala/i],"Sprinkle over the garam masala."],[[/^salt$/i],"Season with salt."],[[/^coriander$/i],"Garnish with coriander."],[[],"Serve hot."]]}
+];
+
+function offline(){
+  const recipes = DISHES.filter(D => D.need.every(has)).map(D => ({
+    title: D.t, time_minutes: D.time, servings: D.serves,
+    ingredients: D.ing.filter(([re]) => has(re)).map(([, amount, name]) => ({name, amount})),
+    steps: D.steps.filter(([needs]) => needs.every(has)).map(([, text]) => text)
+  }));
+  return {recipes};
+}
+
+function inKitchen(name){
+  const k = name.trim().toLowerCase();
+  if(!k) return false;
+  return [...S.fridge, ...S.pantry].some(h => { const x = h.toLowerCase(); return k.includes(x) || x.includes(k); });
+}
+
+function filterToKitchen(r){
+  return {...r, ingredients: r.ingredients.filter(i => inKitchen(i.name))};
+}
+
+async function generate(){
+  if(!S.fridge.length && !S.photo){ setStatus("Add some fridge ingredients or scan your fridge first."); return; }
+  if(triesUsed() >= TRIAL_LIMIT){ refreshTrial(); return; }
+  useTry();
+  const btn = $("generate");
+  btn.disabled = true;
+  setStatus("Cooking up ideas…");
+  try{
+    let result = null, withPhoto = false;
+    try{
+      const sample = await getSample();
+      if(sample){
+        const opts = {cache:false, modelTier:"quick"};
+        if(S.photo && typeof sample.limits === "function"){
+          const lim = await sample.limits();
+          if(lim && lim.images){ opts.images = [S.photo]; withPhoto = true; }
+        }
+        const res = await sample(prompt(withPhoto), opts);
+        result = parse(res.text);
+      }
+    }catch(e){ result = null; }
+
+    if(!result || !Array.isArray(result.recipes) || !result.recipes.length){
+      if(!S.fridge.length){ setStatus("AI couldn't read the photo here. Add your ingredients by hand instead."); return; }
+      result = offline();
+      if(!result.recipes.length) setStatus("No built-in recipe fits these items yet. Add more ingredients, or turn on AI for more dishes.");
+      else setStatus(S.photo ? "AI isn't available here, so the photo couldn't be scanned. Showing built-in recipes." : "Showing built-in recipes, since AI isn't available here.");
+    } else {
+      setStatus(withPhoto ? "Scanned your fridge and created recipes." : "Recipes ready, made only from what's in your fridge.");
+    }
+
+    if(Array.isArray(result.fridge)) result.fridge.forEach(f => { const n = String(f).trim(); if(n) addToFridge(n); });
+
+    S.recipes = result.recipes.slice(0, 4).map(normalize).map(filterToKitchen);
+    save();
+    renderChips();
+    renderRecipes();
+    renderList();
+  } finally {
+    btn.disabled = false;
+  }
+}
+$("generate").onclick = generate;
+
+function renderRecipes(){
+  const box = $("recipes");
+  box.innerHTML = "";
+  if(!S.recipes.length){
+    box.innerHTML = '<p class="empty">Your recipes will appear here.</p>';
+    return;
+  }
+  S.recipes.forEach(r => {
+    const card = document.createElement("article");
+    card.className = "recipe";
+    const h = document.createElement("h3");
+    h.textContent = r.title;
+    const m = document.createElement("div");
+    m.className = "meta";
+    m.textContent = `${r.time} min · serves ${r.servings}`;
+    const ing = document.createElement("ul");
+    r.ingredients.forEach(i => {
+      const li = document.createElement("li");
+      li.textContent = (i.amount ? i.amount + " " : "") + i.name;
+      ing.appendChild(li);
+    });
+    const steps = document.createElement("ol");
+    r.steps.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      steps.appendChild(li);
+    });
+    card.append(h, m, ing, steps);
+    box.appendChild(card);
+  });
+}
+
+function renderList(){
+  const ul = $("list");
+  ul.innerHTML = "";
+  S.list.forEach((it, idx) => {
+    const li = document.createElement("li");
+    if(it.checked) li.classList.add("done");
+    const lab = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!it.checked;
+    cb.onchange = () => { it.checked = cb.checked; save(); renderList(); };
+    const name = document.createElement("span");
+    name.textContent = it.name;
+    const amt = document.createElement("span");
+    amt.className = "amt";
+    amt.textContent = it.amount || "";
+    lab.append(cb, name, amt);
+    const del = document.createElement("button");
+    del.className = "x";
+    del.textContent = "×";
+    del.setAttribute("aria-label", "Remove " + it.name);
+    del.onclick = () => { S.list.splice(idx, 1); save(); renderList(); };
+    li.append(lab, del);
+    ul.appendChild(li);
+  });
+  $("listEmpty").hidden = S.list.length > 0;
+}
+
+function addItem(){
+  const v = $("itemInput").value.trim();
+  if(!v) return;
+  S.list.push({name:v, amount:"", checked:false, manual:true});
+  $("itemInput").value = "";
+  save(); renderList();
+}
+$("addItem").onclick = addItem;
+$("itemInput").onkeydown = e => { if(e.key === "Enter") addItem(); };
+
+$("clearDone").onclick = () => { S.list = S.list.filter(i => !i.checked); save(); renderList(); };
+
+$("copy").onclick = async () => {
+  const todo = S.list.filter(i => !i.checked);
+  const txt = "Shopping list\n" + todo.map(i => "- " + i.name + (i.amount ? " (" + i.amount + ")" : "")).join("\n");
+  try{
+    await navigator.clipboard.writeText(txt);
+    setStatus("Shopping list copied.");
+  }catch(e){
+    setStatus("Copy didn't work here. Select the list and copy it manually.");
+  }
+};
+
+const TRIAL_KEY = "fridge-chef-trial-v1";
+const TRIAL_LIMIT = 3;
+const BUY_LINK = "https://razorpay.me/@shyam3617";
+
+function triesUsed(){
+  try{ return Number(localStorage.getItem(TRIAL_KEY)) || 0; }catch(e){ return 0; }
+}
+function useTry(){
+  try{ localStorage.setItem(TRIAL_KEY, String(triesUsed() + 1)); }catch(e){}
+  refreshTrial();
+}
+function refreshTrial(){
+  const used = triesUsed();
+  const left = Math.max(0, TRIAL_LIMIT - used);
+  const locked = used >= TRIAL_LIMIT;
+  $("trialLeft").textContent = left > 0 ? left + " of " + TRIAL_LIMIT + " tries left" : "No tries left";
+  document.getElementById("trialPage").classList.toggle("locked", locked);
+  $("lock").hidden = !locked;
+  $("lockBuy").href = BUY_LINK;
+}
+
+load();
+renderChips();
+renderRecipes();
+renderList();
+refreshTrial();
+
+</script>
+</body>
+</html>
